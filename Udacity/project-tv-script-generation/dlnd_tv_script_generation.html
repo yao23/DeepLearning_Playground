@@ -13294,12 +13294,12 @@ george: yes, it was purple, i liked it, i dont actually recall considering the b
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: Implement Function</span>
     
-    <span class="c1">## vocab_to_int</span>
-    <span class="n">unique_text</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-    <span class="n">vocab_to_int</span> <span class="o">=</span> <span class="p">{</span> <span class="n">word</span><span class="p">:</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_text</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     
-    <span class="c1">##int_to_vocab</span>
-    <span class="n">int_to_vocab</span> <span class="o">=</span> <span class="p">{</span> <span class="n">idx</span><span class="p">:</span><span class="n">word</span> <span class="k">for</span> <span class="n">idx</span> <span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_text</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">int_to_vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">ii</span><span class="p">:</span> <span class="n">word</span> <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab</span><span class="p">)}</span>
+    <span class="n">vocab_to_int</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">ii</span> <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">int_to_vocab</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
  
     <span class="c1"># return tuple</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">vocab_to_int</span><span class="p">,</span> <span class="n">int_to_vocab</span><span class="p">)</span>
@@ -13540,22 +13540,18 @@ sequence_length = 4</code></pre>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: Implement function</span>
     
-    <span class="n">feature_tensor</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">target_tensor</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">index</span> <span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">sequence_length</span>
-        <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span>
-            <span class="k">break</span>
-        <span class="n">feature_window</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="n">end</span><span class="p">]</span>
-        <span class="n">target_window</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">end</span><span class="p">]</span>
-        <span class="n">feature_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature_window</span><span class="p">)</span>
-        <span class="n">target_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_window</span><span class="p">)</span>
-        
-    <span class="n">feature</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">feature_tensor</span><span class="p">)</span>
-    <span class="n">target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">target_tensor</span><span class="p">)</span>
-    <span class="n">train</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-    <span class="n">data_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">feature_tensors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">target_tensors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">sequence_length</span><span class="p">):</span>
+        <span class="n">end_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">sequence_length</span>
+        <span class="n">feature_tensors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">end_idx</span><span class="p">])</span>
+        <span class="n">target_tensors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">end_idx</span><span class="p">])</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">feature_tensors</span><span class="p">)),</span> 
+                         <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target_tensors</span><span class="p">)))</span>
+    <span class="n">data_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                                          <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
     
     <span class="c1"># return a dataloader</span>
     <span class="k">return</span> <span class="n">data_loader</span>
@@ -13631,19 +13627,19 @@ tensor([ 33,  26,  22,  39,  16,  28,  11,  43,  30,  12])</code></pre>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>torch.Size([10, 5])
-tensor([[ 26,  27,  28,  29,  30],
+tensor([[  0,   1,   2,   3,   4],
         [  1,   2,   3,   4,   5],
-        [  0,   1,   2,   3,   4],
-        [ 31,  32,  33,  34,  35],
-        [ 24,  25,  26,  27,  28],
-        [ 18,  19,  20,  21,  22],
         [  2,   3,   4,   5,   6],
-        [ 28,  29,  30,  31,  32],
-        [ 38,  39,  40,  41,  42],
-        [ 29,  30,  31,  32,  33]])
+        [  3,   4,   5,   6,   7],
+        [  4,   5,   6,   7,   8],
+        [  5,   6,   7,   8,   9],
+        [  6,   7,   8,   9,  10],
+        [  7,   8,   9,  10,  11],
+        [  8,   9,  10,  11,  12],
+        [  9,  10,  11,  12,  13]])
 
 torch.Size([10])
-tensor([ 31,   6,   5,  36,  29,  23,   7,  33,  43,  34])
+tensor([  5,   6,   7,   8,   9,  10,  11,  12,  13,  14])
 </pre>
 </div>
 </div>
@@ -13698,18 +13694,14 @@ out = output[:, -1]</code></pre>
         <span class="nb">super</span><span class="p">(</span><span class="n">RNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># TODO: Implement function        </span>
 
-        <span class="c1"># define embedding layer        </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
-        
-        <span class="c1">## Define the LSTM</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
         <span class="c1"># set class variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
         
-        <span class="c1"># Define the final, fully-connected output layer</span>
+        <span class="c1"># define model layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_input</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span>
@@ -13827,7 +13819,6 @@ out = output[:, -1]</code></pre>
     <span class="c1"># perform backpropagation and optimization</span>
     <span class="n">h</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">each</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">])</span>
 
-    
     <span class="c1"># zero accumulated gradients</span>
     <span class="n">rnn</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 
@@ -13839,7 +13830,7 @@ out = output[:, -1]</code></pre>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     
     <span class="c1"># `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.</span>
-    <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">rnn</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">rnn</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mi">5</span><span class="p">)</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="c1"># return the loss over a batch and the hidden state produced by our model</span>
@@ -14057,65 +14048,65 @@ out = output[:, -1]</code></pre>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Training for 10 epoch(s)...
-Epoch:    1/10    Loss: 4.820845488071441
+Epoch:    1/10    Loss: 4.821810265898704
 
-Epoch:    1/10    Loss: 4.309778565764427
+Epoch:    1/10    Loss: 4.423735503077507
 
-Epoch:    1/10    Loss: 4.160057379007339
+Epoch:    1/10    Loss: 4.2936645679473875
 
-Epoch:    2/10    Loss: 3.9916938284343644
+Epoch:    2/10    Loss: 4.066696910675065
 
-Epoch:    2/10    Loss: 3.897195381402969
+Epoch:    2/10    Loss: 3.9112300333976746
 
-Epoch:    2/10    Loss: 3.8797066259384154
+Epoch:    2/10    Loss: 3.8634969918727875
 
-Epoch:    3/10    Loss: 3.7639347926339304
+Epoch:    3/10    Loss: 3.7871012407426843
 
-Epoch:    3/10    Loss: 3.7254655799865724
+Epoch:    3/10    Loss: 3.6963712067604066
 
-Epoch:    3/10    Loss: 3.748143539905548
+Epoch:    3/10    Loss: 3.6641591838598253
 
-Epoch:    4/10    Loss: 3.64882891689659
+Epoch:    4/10    Loss: 3.609572604514405
 
-Epoch:    4/10    Loss: 3.6089271228313446
+Epoch:    4/10    Loss: 3.5440071102380752
 
-Epoch:    4/10    Loss: 3.6386859296560288
+Epoch:    4/10    Loss: 3.529871004343033
 
-Epoch:    5/10    Loss: 3.553774905148561
+Epoch:    5/10    Loss: 3.4992669164311327
 
-Epoch:    5/10    Loss: 3.5377862758636476
+Epoch:    5/10    Loss: 3.4395851048231125
 
-Epoch:    5/10    Loss: 3.5584387661218644
+Epoch:    5/10    Loss: 3.4289575390815736
 
-Epoch:    6/10    Loss: 3.4789474115664007
+Epoch:    6/10    Loss: 3.4098963124778545
 
-Epoch:    6/10    Loss: 3.4728807765245437
+Epoch:    6/10    Loss: 3.3575478826761245
 
-Epoch:    6/10    Loss: 3.509615276813507
+Epoch:    6/10    Loss: 3.3538028600215912
 
-Epoch:    7/10    Loss: 3.4272574579406565
+Epoch:    7/10    Loss: 3.3454653297300974
 
-Epoch:    7/10    Loss: 3.4241983214616774
+Epoch:    7/10    Loss: 3.2939474802017212
 
-Epoch:    7/10    Loss: 3.456558477759361
+Epoch:    7/10    Loss: 3.294560855150223
 
-Epoch:    8/10    Loss: 3.3854463691460883
+Epoch:    8/10    Loss: 3.2909218217837526
 
-Epoch:    8/10    Loss: 3.368345936894417
+Epoch:    8/10    Loss: 3.2458748619556426
 
-Epoch:    8/10    Loss: 3.421313002824783
+Epoch:    8/10    Loss: 3.248139879345894
 
-Epoch:    9/10    Loss: 3.3450374792785746
+Epoch:    9/10    Loss: 3.258417648512653
 
-Epoch:    9/10    Loss: 3.3404799110889436
+Epoch:    9/10    Loss: 3.2043400156497954
 
-Epoch:    9/10    Loss: 3.3851262629032135
+Epoch:    9/10    Loss: 3.207816677570343
 
-Epoch:   10/10    Loss: 3.3159165132644
+Epoch:   10/10    Loss: 3.2176507976810793
 
-Epoch:   10/10    Loss: 3.3134685988426207
+Epoch:   10/10    Loss: 3.1654988462924956
 
-Epoch:   10/10    Loss: 3.3518092077970505
+Epoch:   10/10    Loss: 3.1750319708585737
 
 </pre>
 </div>
@@ -14333,7 +14324,7 @@ Epoch:   10/10    Loss: 3.3518092077970505
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py:82: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
+<pre>/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py:40: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
 </pre>
 </div>
 </div>
@@ -14344,55 +14335,81 @@ Epoch:   10/10    Loss: 3.3518092077970505
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>jerry: a man, the russian suspect.
+<pre>jerry: i was carjacked...
 
-george:(on phone) oh, you know... i mean, if i don&#39;t mind...
+jerry:(pointing) i know what you did, and it was a good idea.
 
-elaine: oh lomez mirror.
+hoyt: oh.
 
-jerry:(to kramer) i know. i just got the feeling to get the dreamcoat with the girl.
-
-jerry: what about your father? i mean, i mean i was in the middle of the windows. you know, the guy who talks in there?
-
-kramer: well, i don&#39;t want to talk to her.
-
-jerry: i think so.
-
-jerry:(to the phone) hello jerry, jerry.(to jerry) what is he talking about?
+hoyt: so what?
 
 jerry: well...
 
-kramer: well, it&#39;s a long time, i have to be in the bathroom.
+jerry:(pointing to the phone) i don&#39;t think it&#39;s not going to be a little problem to get a big shot.
 
-george: i thought you said you&#39;d be the good sailor. i mean, you gotta go on the phone.
+elaine:(chanting) what do you want?
 
-george: oh, yeah?
+jerry: no.
 
-kramer: well, it&#39;s a little bit, i don&#39;t know what the hell is going on. i think it might be the best..
+hoyt: so, what&#39;s the matter with you?
 
-jerry: well, i think i can get a picture of my fianc...
+hoyt: well, i think i can guarantee him to go to the end of my house.
 
-jerry:(thinking) oh, no, no, i can&#39;t...
+hoyt: so, how do they have to do that?
 
-george: i know what winter.
+elaine: oh, i know, it was an accident, and i can tell you what they do.
 
-george: i know, i think it was a good idea. i have to do this.
+jerry: i think it&#39;s a little askew.
 
-elaine: oh, you think you can see it?
+george: i think it was.
 
-jerry: well, i was wondering if it was a problem, i got a job, i don&#39;t have any change of that.
+jerry: so, what is it going to do?
 
-george: oh, that&#39;s right.
+hoyt: i don&#39;t think so.
 
-jerry: oh, yeah, right. you know, the only reason i could have picked up with her and he doesn&#39;t have a good idea. you know, we don&#39;t have to go.
+hoyt: you know what?
 
-elaine: what? what season?
+kramer: well, i was a kid.
 
-jerry: no i don&#39;t care.(elaine laughs hysterically)
+hoyt:(to the phone) hello, massachusetts.
 
-jerry: i can&#39;t believe it!
+vandelay: you know what? you know how long this is going to be in the bathroom that ted danson had to get the big plane on thursday.
 
+jerry:(pointing to himself) i can&#39;t.
 
+elaine: well, i can&#39;t believe this..
+
+george: i don&#39;t know.
+
+jerry: so you got any health jet on duty?
+
+elaine: oh, that&#39;s right. it&#39;s moors!
+
+hoyt: so, you know what?
+
+jerry: yeah.
+
+hoyt: what is the matter?
+
+kramer: oh.
+
+elaine: oh, yeah.
+
+jerry: so what?
+
+hoyt: i don&#39;t think i can go.
+
+hoyt:(to the phone) hello?
+
+hoyt: hi! what happened?
+
+hoyt: i don&#39;t know how much i could.
+
+jerry:(to the phone) hello?
+
+hoyt: hello.
+
+elaine:(pointing
 </pre>
 </div>
 </div>
