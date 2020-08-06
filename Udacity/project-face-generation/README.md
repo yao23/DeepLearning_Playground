@@ -30,8 +30,6 @@ The project files can be found in Udacity [public GitHub repo](https://github.co
 git clone https://github.com/yao23/DeepLearning_Playground.git
 ```
 
-Since I need GPU support in this project, so I decided to complete our project using the provided, in-classroom project notebook; this will just require that I run the project notebook, and download the complete files later on.
-
 ## Structure of Project
 * dlnd_face_generation.ipynb: Notebook of the project
 * problem_unittests.py: Test file for different TODO functions in the project
